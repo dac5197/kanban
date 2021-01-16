@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+DACME KANBAN
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row d-flex align-items-center">
+            <div class="col">
+                <!-- Display user's boards -->
+                {% include 'board-list.html' with boards=boards %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
