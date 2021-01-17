@@ -12,6 +12,13 @@ from .utils import *
 def pre_save_set_updated_timestamp(sender, instance, **kwargs):
     instance.updated = timezone.now()
 
+@receiver(pre_save, sender=Card)
+def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
+    init_obj = Card.objects.get(id=instance.id)
+    if instance.lane != init_obj.lane:
+        instance.lane_timestamp = timezone.now()
+
+
 '''
 @receiver(post_save, sender=Board)
 @receiver(post_save, sender=Lane)

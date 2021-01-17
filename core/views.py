@@ -25,7 +25,7 @@ class BoardDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['lanes'] = Lane.objects.filter(board__number=self.kwargs['number'])
-        context['cards'] = Card.objects.filter(lane__board__number=self.kwargs['number'])
+        context['cards'] = Card.objects.filter(lane__board__number=self.kwargs['number']).order_by('lane_timestamp')
 
         return context
 

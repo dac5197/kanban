@@ -116,6 +116,7 @@ class Card(models.Model):
     priority = models.ForeignKey(Priority, on_delete=models.SET_NULL, default= 4, null=True, blank=True)
     created = models.DateTimeField(default=timezone.now, null=False, blank=False)
     updated = models.DateTimeField(default=timezone.now, null=False, blank=False)
+    lane_timestamp = models.DateTimeField(default=timezone.now, null=False, blank=False)
     active = models.BooleanField(default=True)
     owner = models.ForeignKey('auth.User', related_name='cards', on_delete=models.CASCADE, null=False, blank=False)
 
