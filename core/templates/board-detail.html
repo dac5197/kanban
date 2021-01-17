@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}
+DACME KANBAN
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid px-0 mx-0">
+        <div class="card bg-light h-full-screen">
+            <div class="card-header mb-0">
+                <h1 class="text-center">{{board.name}}</h1>
+            </div>
+            <div class="card-body p-0">
+                <div class="card-group g-0">
+                    {% for lane in lanes %}
+                        <div class="col">
+                            {% if lane.is_worked %}
+                                <div class="card bg-white h-full-screen">
+                            {% else %}
+                                <div class="card bg-light h-full-screen">
+                            {% endif %}
+                                <div class="card-header">
+                                    <h6 class="text-center">{{lane.number}}</h6>
+                                    <h3 class="text-center">{{lane.name}}</h3>
+                                </div>
+                                <div class="card-body">
+                                    {% for card in cards %}
+                                        {% if card.lane == lane %}
+                                            <div class="card mt-3 mb-4 mx-3 bg-info">
+                                                <div class="card-header">
+                                                    <h6 class="text-center">{{card.number}}</h6>
+                                                    <h4 class="text-center">{{card.name}}</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    {{card.description}}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .h-full-screen {
+            height: 100vh;
+        }
+    </style>
+
+{% endblock %}

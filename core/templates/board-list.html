@@ -1,12 +1,12 @@
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id=#appBoards>
 {% for board in boards %}
-    <a href="#" class="card-anchor">
+    <a href="{% url 'board-detail' board.number %}" class="card-anchor">
         <div class="col">
             <div class="card card-hover h-100 shadow-sm" v-add-class-hover="'shadow-lg'">
                 <img src="https://via.placeholder.com/150x100" class="card-img-top img-fluid">
                 <div class="card-body">
                     <h4 class="card-title text-center">{{board.name}}</h4>
-                    <p class="card-text text-center">Description</p>
+                    <p class="card-text text-center">{{board.number}}</p>
                 </div>
             </div>
         </div>
