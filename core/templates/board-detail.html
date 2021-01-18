@@ -12,53 +12,126 @@ DACME KANBAN
                 <h1 class="text-center">{{board.name}}</h1>
             </div>
             <div class="card-body p-0">
-                <div class="card-group g-0">
-                    {% for lane in lanes %}
-                        <div class="col">
-                            {% if lane.is_worked %}
-                                <div class="card bg-white h-full-screen">
-                            {% else %}
-                                <div class="card bg-light h-full-screen">
-                            {% endif %}
-                                <div class="card-header">
-                                    <h6 class="text-center">{{lane.number}}</h6>
-                                    <h3 class="text-center">{{lane.name}}</h3>
-                                </div>
-                                <div class="card-body">
-                                    {% for card in cards %}
-                                        {% if card.lane == lane %}
-                                            <div class="card mt-3 mb-4 mx-3 bg-info">
-                                                <div class="card-header">
-                                                    <h6 class="text-center">{{card.number}}</h6>
-                                                    <h4 class="text-center">{{card.name}}</h4>
-                                                </div>
-                                                <div class="card-body">
-                                                    {{card.description}}
-                                                </div>
-                                                <div class="card-footer d-flex justify-content-center">
-                                                    <a href="#" class="btn btn-secondary btn-sm pb-2 mx-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
-                                                            <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
-                                                        </svg>
-                                                    </a>
-                                                    <a href="#" class="btn btn-primary btn-sm pb-2 mx-2">Details</a>
-                                                    <a href="#" class="btn btn-secondary btn-sm pb-2 mx-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
-                                                            <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                <div id="app">
+                    <div class="card-group g-0">
+                        <lane-comp
+                            v-for="lane in lanes"
+                            v-bind:lane="lane"
+                            v-bind:cards="cards"
+                            v-bind:key="lane.number"
+                        ></lane-comp>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    {{ lanes_serialized|json_script:"lanes_serialized" }}
+    {{ cards_serialized|json_script:"cards_serialized" }}
+
+    <script>
+        var vLanes = JSON.parse(document.getElementById('lanes_serialized').textContent);  
+        var vCards = JSON.parse(document.getElementById('cards_serialized').textContent);  
+
+        function cardChangeLane(url) {
+            fetch(url, {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                app.cards = data
+            })
+        }
+
+        const cardComp = Vue.component('card-comp', {
+            delimiters: ["[[", "]]"],
+            props: ['card'],
+            methods: {
+                cardChangeLane: cardChangeLane
+            },
+            template: `
+                <div class="card mt-3 mb-4 mx-3 bg-info">
+                    <div class="card-header">
+                        <h6 class="text-center">[[card.number]]</h6>
+                        <h4 class="text-center">[[card.name]]</h4>
+                    </div>
+                    <div class="card-body">
+                        [[card.description]]
+                    </div>
+                    <div class="card-footer d-flex justify-content-center">
+                        <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/prev/'+[[card.id]])">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="btn btn-primary btn-sm pb-2 mx-2">Details</a>
+                        <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/next/'+[[card.id]])">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            `
+        })
+
+        const laneComp = Vue.component('lane-comp', {
+            delimiters: ["[[", "]]"],
+            props: ['lane', 'cards'],
+            components: {
+                cardComp
+            },
+            methods: {
+                cardsForThisLane: function(laneID) {
+                    return this.cards.filter(function (card) {
+                        return card.lane === laneID
+                    })
+                }
+            },
+            template: `
+                
+                <div class="col">
+                    <div class="card bg-light h-full-screen">
+                        <div class="card-header">
+                            <h6 class="text-center">[[lane.number]]</h6>
+                            <h3 class="text-center">[[lane.name]]</h3>
+                        </div>
+                        <div class="card-body">
+                            <card-comp
+                                v-for="card in cardsForThisLane(lane.id)"
+                                v-bind:card="card"
+                                v-bind:key="card.number"
+                            ></card-comp>
+                        </div>
+                    </div>
+                </div>
+            
+            `
+        })
+
+        var app = new Vue({
+            delimiters: ["[[", "]]"],
+            el: '#app',
+            components: {
+                cardComp,
+                laneComp
+            },
+            data: {
+                lanes : vLanes,
+                cards : vCards
+            },
+            methods: {
+                cardChangeLane: cardChangeLane
+            }
+        })
+
+    </script>
+
     <style>
         .h-full-screen {
             height: 100vh;
