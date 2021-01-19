@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+DACME KANBAN
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0 mx-0">
+    <div class="card bg-light border-bottom-0">
+        <div class="card-header mb-0">
+            <h4 class="text-center">Create a new Board</h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="row justify-content-center m-3">
+                <div class="col-md-3">
+                    <div class="card p-3">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% include 'form-errors.html' with form=form %}
+                            <label for="{{form.name.id_for_label}}"><strong>{{form.name.label}}:</strong></label>
+                            {{form.name|add_class:'form-control'}}
+                            <div class="d-grid">
+                            <button class="btn btn-success m-3" name="submit" value="submit" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

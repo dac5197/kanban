@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from api.serializers import *
@@ -20,6 +20,17 @@ class BoardListView(ListView):
     def get_queryset(self):
         queryset = Board.objects.filter(owner=self.request.user).order_by('number')
         return queryset
+
+
+class BoardCreateView(CreateView):
+    model = Board
+    template_name = 'board-create.html'
+    fields = ['name']
+    success_url = '/{number}'
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 
 class BoardDetailView(DetailView):
@@ -55,8 +66,6 @@ def card_change_lane_view(request, board_id, action, card_id):
     cards_serialized = CardSerializer(Card.objects.filter(lane__board__id=board_id).order_by('lane_timestamp'), many=True).data
     
     return JsonResponse(cards_serialized, safe=False)
-
-
 
 
 def board_detail_view(request, number):
