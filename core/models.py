@@ -123,4 +123,13 @@ class Card(models.Model):
     def __str__(self):
         return self.number
 
+    @property
+    def lane_location(self):
+        if self.lane.is_beginning:
+            loc = 'start'
+        elif self.lane.is_completed:
+            loc = 'end'
+        else:
+            loc = 'middle'
 
+        return loc

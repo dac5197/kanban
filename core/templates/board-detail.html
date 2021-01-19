@@ -39,7 +39,10 @@ DACME KANBAN
                                     <card-comp
                                         v-for="card in cardsForThisLane({{lane.id}})"
                                         v-bind:card="card"
+                                        v-bind:showfooter="showFooter"
                                         v-bind:key="card.name"
+                                        @mouseover.native="selectCardNumber(card.number)"
+                                        @mouseleave.native="showFooter = null"
                                     ></card-comp>
                                     
                                     <!--
@@ -86,6 +89,7 @@ DACME KANBAN
     <script>
         var vLanes = JSON.parse(document.getElementById('lanes_serialized').textContent);  
         var vCards = JSON.parse(document.getElementById('cards_serialized').textContent);  
+        var showFooter = '42'
 
         function cardChangeLane(url) {
             fetch(url, {
@@ -98,12 +102,17 @@ DACME KANBAN
             .then((response) => response.json())
             .then((data) => {
                 app.cards = data
+                app.showFooter = null
             })
+        }
+
+        function selectCardNumber(number) {
+            app.showFooter = number
         }
 
         const cardComp = Vue.component('card-comp', {
             delimiters: ["[[", "]]"],
-            props: ['card'],
+            props: ['card', 'showfooter'],
             methods: {
                 cardChangeLane: cardChangeLane
             },
@@ -116,18 +125,20 @@ DACME KANBAN
                     <div class="card-body">
                         [[card.description]]
                     </div>
+                    <div v-show="showfooter === card.number">
                     <div class="card-footer d-flex justify-content-center">
-                        <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/prev/'+[[card.id]])">
+                        <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/prev/'+[[card.id]])" v-if="card.lane_location !== 'start'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
                                 <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                             </svg>
                         </a>
                         <a href="#" class="btn btn-primary btn-sm pb-2 mx-2">Details</a>
-                        <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/next/'+[[card.id]])">
+                        <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/next/'+[[card.id]])" v-if="card.lane_location !== 'end'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
                                 <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
                             </svg>
                         </a>
+                    </div>
                     </div>
                 </div>
             `
@@ -176,15 +187,18 @@ DACME KANBAN
             },
             data: {
                 lanes : vLanes,
-                cards : vCards
+                cards : vCards,
+                showFooter: '42',
             },
             methods: {
                 cardChangeLane: cardChangeLane,
+                selectCardNumber: selectCardNumber,
                 cardsForThisLane: function(laneID) {
                     return this.cards.filter(function (card) {
                         return card.lane === laneID
                     })
-                }
+                },
+                
             }
         })
 

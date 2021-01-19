@@ -62,6 +62,7 @@ class CardSerializer(serializers.ModelSerializer):
     updated = serializers.ReadOnlyField()
     active = serializers.ReadOnlyField()
     lane_timestamp = serializers.ReadOnlyField()
+    lane_location = serializers.ReadOnlyField()
 
     class Meta:
         model = Card
@@ -75,6 +76,7 @@ class CardSerializer(serializers.ModelSerializer):
             'created', 
             'updated',
             'lane_timestamp',
+            'lane_location',
             'active',
             'owner',
         ]
