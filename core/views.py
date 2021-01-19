@@ -44,13 +44,13 @@ class BoardDetailView(DetailView):
 
 
 def card_change_lane_view(request, board_id, action, card_id):
-    #if request.method == 'POST':
-    card = Card.objects.get(id=card_id)
+    if request.method == 'POST':
+        card = Card.objects.get(id=card_id)
 
-    if card.lane.board.id == board_id:
+        if card.lane.board.id == board_id:
 
-        card.lane = get_adjacent_lane(lane=card.lane, action=action)
-        card.save()
+            card.lane = get_adjacent_lane(lane=card.lane, action=action)
+            card.save()
         
     cards_serialized = CardSerializer(Card.objects.filter(lane__board__id=board_id).order_by('lane_timestamp'), many=True).data
     

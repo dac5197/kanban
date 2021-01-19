@@ -9,18 +9,71 @@ DACME KANBAN
     <div class="container-fluid px-0 mx-0">
         <div class="card bg-light h-full-screen">
             <div class="card-header mb-0">
+                <h4 class="text-center">{{board.number}}</h4>
                 <h1 class="text-center">{{board.name}}</h1>
             </div>
             <div class="card-body p-0">
                 <div id="app">
                     <div class="card-group g-0">
+                        <!--
                         <lane-comp
                             v-for="lane in lanes"
                             v-bind:lane="lane"
                             v-bind:cards="cards"
                             v-bind:key="lane.number"
                         ></lane-comp>
-
+                        -->
+                        {% for lane in lanes %}
+                        <div class="col">
+                            {% if lane.is_worked %}
+                                <div class="card bg-white h-full-screen">
+                            {% else %}
+                                <div class="card bg-light h-full-screen">
+                            {% endif %}
+                                <div class="card-header">
+                                    <h6 class="text-center">{{lane.number}}</h6>
+                                    <h3 class="text-center">{{lane.name}}</h3>
+                                </div>
+                                <div class="card-body">
+                                    
+                                    <card-comp
+                                        v-for="card in cardsForThisLane({{lane.id}})"
+                                        v-bind:card="card"
+                                        v-bind:key="card.name"
+                                    ></card-comp>
+                                    
+                                    <!--
+                                    {% for card in cards %}
+                                        {% if card.lane == lane %}
+                                            <div class="card mt-3 mb-4 mx-3 bg-info">
+                                                <div class="card-header">
+                                                    <h6 class="text-center">{{card.number}}</h6>
+                                                    <h4 class="text-center">{{card.name}}</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    {{card.description}}
+                                                </div>
+                                                <div class="card-footer d-flex justify-content-center">
+                                                    <a href="#" class="btn btn-secondary btn-sm pb-2 mx-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                                            <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                                                        </svg>
+                                                    </a>
+                                                    <a href="#" class="btn btn-primary btn-sm pb-2 mx-2">Details</a>
+                                                    <a href="#" class="btn btn-secondary btn-sm pb-2 mx-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                                            <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    -->
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                     </div>
                 </div>
             </div>
@@ -126,7 +179,12 @@ DACME KANBAN
                 cards : vCards
             },
             methods: {
-                cardChangeLane: cardChangeLane
+                cardChangeLane: cardChangeLane,
+                cardsForThisLane: function(laneID) {
+                    return this.cards.filter(function (card) {
+                        return card.lane === laneID
+                    })
+                }
             }
         })
 
