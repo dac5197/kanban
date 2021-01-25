@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
@@ -40,9 +40,11 @@ class BoardDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         lanes = Lane.objects.filter(board__number=self.kwargs['number'])
         context['lanes'] = lanes
         context['lanes_serialized'] = LaneSerializer(lanes, many=True).data
+
         cards = Card.objects.filter(lane__board__number=self.kwargs['number']).order_by('lane_timestamp')
         context['cards'] = cards
         context['cards_serialized'] = CardSerializer(cards, many=True).data
@@ -50,8 +52,9 @@ class BoardDetailView(DetailView):
         return context
 
     def get_object(self, **kwargs):
-        board = Board.objects.get(number=self.kwargs['number'])
-        return board
+        return Board.objects.get(number=self.kwargs['number'])
+        
+        
 
 
 def card_change_lane_view(request, board_id, action, card_id):
