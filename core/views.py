@@ -54,8 +54,6 @@ class BoardDetailView(DetailView):
     def get_object(self, **kwargs):
         return Board.objects.get(number=self.kwargs['number'])
         
-        
-
 
 def card_change_lane_view(request, board_id, action, card_id):
     if request.method == 'POST':

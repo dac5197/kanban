@@ -133,3 +133,7 @@ class Card(models.Model):
             loc = 'middle'
 
         return loc
+
+    @property
+    def lane_is_worked(self):
+        return self.lane.is_worked

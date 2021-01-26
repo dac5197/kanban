@@ -106,10 +106,6 @@ DACME KANBAN
             })
         }
 
-        function selectCardNumber(number) {
-            app.showFooter = number
-        }
-
         const cardComp = Vue.component('card-comp', {
             delimiters: ["[[", "]]"],
             props: ['card', 'showfooter'],
@@ -122,20 +118,20 @@ DACME KANBAN
                         <h6 class="text-center">[[card.number]]</h6>
                         <h4 class="text-center">[[card.name]]</h4>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body pt-0 pb-4" v-show="showfooter === card.number || card.lane_is_worked">
                         <div class="show-formatting">
                             [[card.description]]
                         </div>
                     </div>
                     <div v-show="showfooter === card.number">
                         <div class="card-footer d-flex justify-content-center">
-                            <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/prev/'+[[card.id]])" v-if="card.lane_location !== 'start'">
+                            <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('/card-change-lane/{{board.id}}/prev/'+[[card.id]])" v-if="card.lane_location !== 'start'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
                                     <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                                 </svg>
                             </a>
                             <a href="#" class="btn btn-primary btn-sm pb-2 mx-2">Details</a>
-                            <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('card-change-lane/{{board.id}}/next/'+[[card.id]])" v-if="card.lane_location !== 'end'">
+                            <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('/card-change-lane/{{board.id}}/next/'+[[card.id]])" v-if="card.lane_location !== 'end'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
                                     <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
                                 </svg>
@@ -190,11 +186,13 @@ DACME KANBAN
             data: {
                 lanes : vLanes,
                 cards : vCards,
-                showFooter: '42',
+                showFooter: '',
             },
             methods: {
                 cardChangeLane: cardChangeLane,
-                selectCardNumber: selectCardNumber,
+                selectCardNumber: function(number) {
+                    this.showFooter = number
+                },
                 cardsForThisLane: function(laneID) {
                     return this.cards.filter(function (card) {
                         return card.lane === laneID
