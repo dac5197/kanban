@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
@@ -68,6 +68,21 @@ def card_change_lane_view(request, board_id, action, card_id):
     cards_serialized = CardSerializer(Card.objects.filter(lane__board__id=board_id).order_by('lane_timestamp'), many=True).data
     
     return JsonResponse(cards_serialized, safe=False)
+
+
+def create_defualt_lanes(request, number):
+
+    #Get board
+    board = Board.objects.get(number=number)
+
+    #Create First Lane    
+    Lane.objects.create(board=board, name='To Do', path='A', owner=request.user)
+    #Create Second Lane    
+    Lane.objects.create(board=board, name='Working', path='B', owner=request.user, queue_max=3, is_worked=True)
+    #Create Third Lane    
+    Lane.objects.create(board=board, name='Completed', path='C', owner=request.user)
+
+    return redirect('board-detail', number=number)
 
 
 def board_detail_view(request, number):

@@ -18,6 +18,19 @@ def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
     if instance.lane != init_obj.lane:
         instance.lane_timestamp = timezone.now()
 
+@receiver(pre_save, sender=Lane)
+def pre_save_set_is_beginning(sender, instance, **kwargs):
+    first_lane = Lane.objects.filter(board=instance.board).order_by('path').first()
+    if first_lane == instance or first_lane == None:
+        instance.is_beginning=True
+
+@receiver(pre_save, sender=Lane)
+def pre_save_set_is_completed(sender, instance, **kwargs):
+    lanes = Lane.objects.filter(board=instance.board).order_by('path')
+    if lanes:
+        if instance.path > lanes.last().path:
+            instance.is_completed=True
+            lanes.exclude(id=instance.id).update(is_completed=False)
 
 '''
 @receiver(post_save, sender=Board)

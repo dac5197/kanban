@@ -8,3 +8,4 @@ def get_adjacent_lane(lane, action):
         adj_path = chr(ord(lane.path)-1)
 
     return Lane.objects.get(board=lane.board, path=adj_path)
+
