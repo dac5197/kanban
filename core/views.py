@@ -52,7 +52,8 @@ class BoardDetailView(DetailView):
         return context
 
     def get_object(self, **kwargs):
-        return Board.objects.get(number=self.kwargs['number'])
+        #return Board.objects.get(number=self.kwargs['number'])
+        return get_object_or_404(Board, number=self.kwargs['number'])
         
 
 def card_change_lane_view(request, board_id, action, card_id):
@@ -71,12 +72,23 @@ def card_change_lane_view(request, board_id, action, card_id):
 
 def board_detail_view(request, number):
 
+    #Get board
     board = Board.objects.get(number=number)
+
+    #Get lanes and serialized lanes for board
     lanes = Lane.objects.filter(board__number=number)
+    lanes_serialized = LaneSerializer(lanes, many=True).data
+
+    #Get cards and serialized cards for board
+    cards = Card.objects.filter(lane__board__number=number).order_by('lane_timestamp')
+    cards_serialized = CardSerializer(cards, many=True).data
 
     context = {
         'board' : board,
         'lanes' : lanes,
+        'lanes_serialized' : lanes_serialized,
+        'cards' : cards,
+        'cards_serialized' : cards_serialized,
     }
 
     return render(request, 'board-detail.html', context)
