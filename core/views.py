@@ -54,7 +54,17 @@ class BoardDetailView(DetailView):
     def get_object(self, **kwargs):
         #return Board.objects.get(number=self.kwargs['number'])
         return get_object_or_404(Board, number=self.kwargs['number'])
-        
+
+
+class LaneCreateView(CreateView):
+    model = Lane
+    template_name = 'lane-create.html'
+    fields = ['name', 'path', 'is_worked', 'queue_max',]
+    success_url = '/{number}'
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 def card_change_lane_view(request, board_id, action, card_id):
     if request.method == 'POST':
@@ -71,7 +81,6 @@ def card_change_lane_view(request, board_id, action, card_id):
 
 
 def create_defualt_lanes(request, number):
-
     #Get board
     board = Board.objects.get(number=number)
 
@@ -86,7 +95,6 @@ def create_defualt_lanes(request, number):
 
 
 def board_detail_view(request, number):
-
     #Get board
     board = Board.objects.get(number=number)
 

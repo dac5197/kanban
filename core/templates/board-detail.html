@@ -85,18 +85,22 @@ DACME KANBAN
                                 <p class="lead text-center">
                                     This Kanban has no lanes.  Please create lanes to begin.
                                 </p>
-                                <hr class="my-4">
-                                <p class="text-center">
-                                    Choose Create Default Lanes to create three lanes: To Do, Working, and Completed.  To make your own lanes, choose Create Custom Lanes.
-                                </p>
+                                
                                 <div class="row justify-content-center">
-                                    <div class="d-grid gap-2 col-6 mx-auto">
-                                        <a class="btn btn-primary btn-lg my-3" href="{% url 'create_defualt_lanes' number=board.number %}">
+                                    <div class="d-grid gap-2 col mx-auto">
+                                        <hr class="my-4">
+                                        <p class="text-center">
+                                            Choose Create Default Lanes to create three lanes:<br />To Do, Working, and Completed.
+                                        </p>
+                                        <p class="text-center">
+                                            To make your own lanes, choose Create Custom Lanes.
+                                        </p>
+                                        <a class="btn btn-primary btn-lg my-3" href="{% url 'create-defualt-lanes' number=board.number %}">
                                             Create Default Lanes
                                         </a>
-                                        <button class="btn btn-primary btn-lg my-3">
+                                        <a class="btn btn-primary btn-lg my-3" href="{% url 'lane-create' number=board.number %}">
                                             Create Custom Lanes
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

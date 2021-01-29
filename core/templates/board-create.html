@@ -21,8 +21,8 @@ DACME KANBAN
                             {% include 'form-errors.html' with form=form %}
                             <label for="{{form.name.id_for_label}}"><strong>{{form.name.label}}:</strong></label>
                             {{form.name|add_class:'form-control'}}
-                            <div class="d-grid">
-                            <button class="btn btn-success m-3" name="submit" value="submit" type="submit">Submit</button>
+                            <div class="d-grid mt-3">
+                            <button class="btn btn-success btn-lg m-3" name="submit" value="submit" type="submit">Submit</button>
                             </div>
                         </form>
                     </div>

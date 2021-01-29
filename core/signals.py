@@ -6,24 +6,29 @@ from .models import *
 from .utils import *
 
 
+#Set updated timestamp each time model is saved
 @receiver(pre_save, sender=Board)
 @receiver(pre_save, sender=Lane)
 @receiver(pre_save, sender=Card)
 def pre_save_set_updated_timestamp(sender, instance, **kwargs):
     instance.updated = timezone.now()
 
+#Set lane timestamp when card changes lane
 @receiver(pre_save, sender=Card)
 def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
     init_obj = Card.objects.get(id=instance.id)
     if instance.lane != init_obj.lane:
         instance.lane_timestamp = timezone.now()
 
+#Set lane is_beginning to True if lane path is first
 @receiver(pre_save, sender=Lane)
 def pre_save_set_is_beginning(sender, instance, **kwargs):
     first_lane = Lane.objects.filter(board=instance.board).order_by('path').first()
     if first_lane == instance or first_lane == None:
         instance.is_beginning=True
 
+#Set lane is_completed to True if lane path is last
+#Set is_completed to False for all other lanes for that board
 @receiver(pre_save, sender=Lane)
 def pre_save_set_is_completed(sender, instance, **kwargs):
     lanes = Lane.objects.filter(board=instance.board).order_by('path')
