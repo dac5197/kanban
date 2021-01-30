@@ -32,8 +32,16 @@ DACME KANBAN
                                         <div class="card bg-light h-full-screen">
                                     {% endif %}
                                         <div class="card-header">
-                                            <h6 class="text-center">{{lane.number}}</h6>
-                                            <h3 class="text-center">{{lane.name}}</h3>
+                                            <div class="d-flex justify-content-around align-items-center">
+                                                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#laneModal{{lane.number}}">
+                                                    <i class="fas fa-bars"></i>
+                                                </button>
+                                                <div class="align-self-stretch">
+                                                    <h6 class="text-center">{{lane.number}}</h6>
+                                                    <h3 class="text-center">{{lane.name}}</h3>
+                                                </div>
+                                                <div></div>
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             
@@ -77,6 +85,7 @@ DACME KANBAN
                                         </div>
                                     </div>
                                 </div>
+                                {% include 'lane-modal.html' with lane=lane %}
                             {% endfor %}
                         {% else %}
                             
@@ -111,7 +120,7 @@ DACME KANBAN
             </div>
         </div>
     </div>
-    
+
     {{ lanes_serialized|json_script:"lanes_serialized" }}
     {{ cards_serialized|json_script:"cards_serialized" }}
 
