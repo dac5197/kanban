@@ -23,8 +23,24 @@ def get_last_path(lane):
 
 
 #Increment lane paths to accomodate new inserted lane
-def insert_path(lane):
-    lanes = Lane.objects.filter(path__gte=lane.path).exclude(id=lane.id)
+def insert_path_new_lane(lane):
+    lanes = Lane.objects.filter(path__gte=lane.path, board=lane.board).exclude(id=lane.id)
     for lane in lanes:
         lane.path = chr(ord(lane.path)+1)
         lane.save()
+
+
+def insert_path_update_lane(inst_lane, init_lane):
+    lanes = Lane.objects.filter(path__range=(init_lane.path, inst_lane.path), board=inst_lane.board).exclude(id=inst_lane.id)
+    for lane in lanes:
+        print(f'{lane.number} - Path: {lane.path}')
+
+
+#Increment or decrement path fields of queryset
+def insert_path(qs, action):
+    for obj in qs:
+        if action == 'increment' or action == 'plus' or action == 'add' or action == 'right':
+            obj.path = chr(ord(obj.path)+1)
+        elif action == 'decrement' or action == 'minus' or action == 'subtract' or action == 'left':
+            obj.path = chr(ord(obj.path)-1)
+        obj.save()

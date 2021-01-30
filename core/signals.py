@@ -24,7 +24,7 @@ def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
 @receiver(pre_save, sender=Lane)
 def pre_save_set_is_beginning(sender, instance, **kwargs):
     lanes = Lane.objects.filter(board=instance.board).order_by('path')
-
+    print(f'pre_save path: {instance.path}')
     if lanes:
         if instance.path < lanes.first().path:
             lanes.exclude(id=instance.id).update(is_beginning=False)
@@ -39,7 +39,7 @@ def pre_save_set_is_beginning(sender, instance, **kwargs):
 def pre_save_set_is_completed(sender, instance, **kwargs):
     lanes = Lane.objects.filter(board=instance.board).order_by('path')
     if lanes:
-        if instance.path > lanes.last().path:
+        if instance.path >= lanes.last().path:
             instance.is_completed=True
             lanes.exclude(id=instance.id).update(is_completed=False)
 

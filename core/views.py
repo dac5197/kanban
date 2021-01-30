@@ -58,7 +58,7 @@ class BoardDetailView(DetailView):
 
 class LaneCreateView(CreateView):
     model = Lane
-    template_name = 'lane-create.html'
+    template_name = 'lane-form.html'
     fields = ['name', 'path', 'is_worked', 'queue_max',]
 
     def form_valid(self, form):
@@ -68,13 +68,38 @@ class LaneCreateView(CreateView):
         #Set path
         if not form.instance.path:
             form.instance.path = get_last_path(lane=form.instance)
-        elif Lane.objects.filter(path=form.instance.path):
-            insert_path(lane=form.instance)
+        elif Lane.objects.filter(path=form.instance.path, board=form.instance.board):
+            insert_path(qs=Lane.objects.filter(path__gte=form.instance.path, board=form.instance.board).exclude(id=form.instance.id), action='right')
         #Save form
         return super().form_valid(form)
 
     def get_success_url(self):
         return f'/{self.kwargs["number"]}'
+
+
+class LaneUpdateView(UpdateView):
+    model = Lane
+    template_name = 'lane-form.html'
+    fields = ['name', 'path', 'is_worked', 'queue_max',]
+
+    def get_object(self, **kwargs):
+        return get_object_or_404(Lane, number=self.kwargs['number'])
+
+    def form_valid(self, form):
+        #If existing lane has instance path:
+        #   If initial path greater than instance path then increment queryset paths
+        #   Else intial path less than instance path then decrement queryset paths
+        if Lane.objects.filter(path=form.instance.path, board=form.instance.board).exclude(id=form.instance.id):
+            init_lane = Lane.objects.get(id=form.instance.id)
+            if init_lane.path > form.instance.path:
+                insert_path(qs=Lane.objects.filter(path__range=(form.instance.path, init_lane.path), board=form.instance.board).exclude(id=form.instance.id), action='right')
+            else:
+                insert_path(qs=Lane.objects.filter(path__range=(init_lane.path, form.instance.path), board=form.instance.board).exclude(id=form.instance.id), action='left')
+        #Save form
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return f'/{self.object.board.number}'
 
 
 def card_change_lane_view(request, board_id, action, card_id):

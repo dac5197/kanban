@@ -17,9 +17,9 @@ class BoardAdmin(admin.ModelAdmin):
     fieldsets = ()
 
 class LaneAdmin(admin.ModelAdmin):
-    list_display = ('number', 'name', 'board', 'path', 'created', 'updated', 'active',)
+    list_display = ('number', 'name', 'board', 'path', 'active', 'is_worked', 'is_beginning', 'is_completed',)
     list_filter = ()
-    search_fields = ('number', 'name', 'board', 'path', 'created', 'updated', 'active',)
+    search_fields = ('number', 'name', 'board', 'path', 'active',)
     readonly_fields = []
 
     filter_horizontal = ()
@@ -27,7 +27,7 @@ class LaneAdmin(admin.ModelAdmin):
     fieldsets = ()
 
 class CardAdmin(admin.ModelAdmin):
-    list_display = ('number', 'name', 'land', 'priority', 'created', 'updated', 'active',)
+    list_display = ('number', 'name', 'land', 'priority', 'created', 'updated', 'active')
     list_filter = ()
     search_fields = ('number', 'name', 'land', 'priority', 'created', 'updated', 'active',)
     readonly_fields = []
