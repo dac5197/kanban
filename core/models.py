@@ -79,7 +79,7 @@ class Lane(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     number = models.CharField(max_length=20, unique=True, default=increment_lane_number)
     board = models.ForeignKey(Board, on_delete=models.CASCADE, null=True, blank=True)
-    path = models.CharField(max_length=25, blank=False, null=False)
+    path = models.CharField(max_length=25, blank=True, null=True)
     is_worked = models.BooleanField(default=False)
     is_beginning = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)

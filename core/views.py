@@ -41,7 +41,7 @@ class BoardDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        lanes = Lane.objects.filter(board__number=self.kwargs['number'])
+        lanes = Lane.objects.filter(board__number=self.kwargs['number']).order_by('path')
         context['lanes'] = lanes
         context['lanes_serialized'] = LaneSerializer(lanes, many=True).data
 
@@ -60,11 +60,22 @@ class LaneCreateView(CreateView):
     model = Lane
     template_name = 'lane-create.html'
     fields = ['name', 'path', 'is_worked', 'queue_max',]
-    success_url = '/{number}'
 
     def form_valid(self, form):
+        #Set lane field values
         form.instance.owner = self.request.user
+        form.instance.board = Board.objects.get(number=self.kwargs['number'])
+        #Set path
+        if not form.instance.path:
+            form.instance.path = get_last_path(lane=form.instance)
+        elif Lane.objects.filter(path=form.instance.path):
+            insert_path(lane=form.instance)
+        #Save form
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return f'/{self.kwargs["number"]}'
+
 
 def card_change_lane_view(request, board_id, action, card_id):
     if request.method == 'POST':

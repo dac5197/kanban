@@ -23,9 +23,15 @@ def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
 #Set lane is_beginning to True if lane path is first
 @receiver(pre_save, sender=Lane)
 def pre_save_set_is_beginning(sender, instance, **kwargs):
-    first_lane = Lane.objects.filter(board=instance.board).order_by('path').first()
-    if first_lane == instance or first_lane == None:
+    lanes = Lane.objects.filter(board=instance.board).order_by('path')
+
+    if lanes:
+        if instance.path < lanes.first().path:
+            lanes.exclude(id=instance.id).update(is_beginning=False)
+            instance.is_beginning=True
+    elif not lanes:
         instance.is_beginning=True
+    
 
 #Set lane is_completed to True if lane path is last
 #Set is_completed to False for all other lanes for that board
