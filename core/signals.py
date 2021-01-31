@@ -13,6 +13,7 @@ from .utils import *
 def pre_save_set_updated_timestamp(sender, instance, **kwargs):
     instance.updated = timezone.now()
 
+
 #Set lane timestamp when card changes lane
 @receiver(pre_save, sender=Card)
 def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
@@ -20,37 +21,20 @@ def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
     if instance.lane != init_obj.lane:
         instance.lane_timestamp = timezone.now()
 
-#Set lane is_beginning to True if lane path is first
-@receiver(pre_save, sender=Lane)
-def pre_save_set_is_beginning(sender, instance, **kwargs):
-    lanes = Lane.objects.filter(board=instance.board).order_by('path')
-    print(f'pre_save path: {instance.path}')
-    if lanes:
-        if instance.path < lanes.first().path:
-            lanes.exclude(id=instance.id).update(is_beginning=False)
-            instance.is_beginning=True
-    elif not lanes:
-        instance.is_beginning=True
-    
 
-#Set lane is_completed to True if lane path is last
-#Set is_completed to False for all other lanes for that board
-@receiver(pre_save, sender=Lane)
-def pre_save_set_is_completed(sender, instance, **kwargs):
-    lanes = Lane.objects.filter(board=instance.board).order_by('path')
-    if lanes:
-        if instance.path >= lanes.last().path:
-            instance.is_completed=True
-            lanes.exclude(id=instance.id).update(is_completed=False)
-
-'''
-@receiver(post_save, sender=Board)
+#For first lane for lanes belonging to board, set is_beginning to true and set to false for all other lanes
 @receiver(post_save, sender=Lane)
-@receiver(post_save, sender=Card)
-def post_save_create_number(sender, instance, created, **kwargs):
-    if created:
-        number = create_number(obj=instance)
-        print(number)
-        print(type(number))
-        type(instance).objects.filter(id=instance.id).update(number=number)
-'''
+def post_save_set_is_beginning(sender, instance, **kwargs):
+    lanes = Lane.objects.filter(board=instance.board).order_by('path')
+    first_lane = lanes.first()
+    lanes.filter(id=first_lane.id).update(is_beginning=True)
+    lanes.exclude(id=first_lane.id).update(is_beginning=False)
+
+
+#For last lane for lanes belonging to board, set is_completed to true and set to false for all other lanes
+@receiver(post_save, sender=Lane)
+def post_save_set_is_completed(sender, instance, **kwargs):
+    lanes = Lane.objects.filter(board=instance.board).order_by('path')
+    last_lane = lanes.last()
+    lanes.filter(id=last_lane.id).update(is_completed=True)
+    lanes.exclude(id=last_lane.id).update(is_completed=False)
