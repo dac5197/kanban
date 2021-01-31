@@ -67,7 +67,7 @@ class LaneCreateView(CreateView):
         form.instance.board = Board.objects.get(number=self.kwargs['number'])
         #Set path
         if not form.instance.path:
-            form.instance.path = get_last_path(lane=form.instance)
+            form.instance.path = get_last_path_plus_one(lane=form.instance)
         elif Lane.objects.filter(path=form.instance.path, board=form.instance.board):
             insert_path(qs=Lane.objects.filter(path__gte=form.instance.path, board=form.instance.board).exclude(id=form.instance.id), action='right')
         #Save form
