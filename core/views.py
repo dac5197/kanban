@@ -56,6 +56,16 @@ class BoardDetailView(DetailView):
         return get_object_or_404(Board, number=self.kwargs['number'])
 
 
+class LaneListView(ListView):
+    models = Lane
+    template_name = 'lane-list.html'
+    context_object_name = 'lanes'
+
+    def get_queryset(self):
+        queryset = Lane.objects.filter(owner=self.request.user).order_by('board', 'path')
+        return queryset
+        
+
 class LaneCreateView(CreateView):
     model = Lane
     template_name = 'lane-form.html'

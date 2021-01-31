@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+DACME KANBAN - My Lanes
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0 mx-0">
+    <div class="card bg-light border-bottom-0">
+        <div class="card-header mb-0">
+            <h4 class="text-center">My Lanes</h4>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm small"
+                data-toggle="table"
+                data-sort-class="table-active"
+                data-sortable="true"
+                data-pagination="true"
+                data-pagination-h-align="left"
+                data-pagination-detail-h-align="right"
+                data-page-size="25"
+                data-page-list="[25, 50, 100, All]"
+            >
+                <thead class="bg-light">
+                    <tr>
+                        <th data-field="board" data-sortable="true">Board</th>
+                        <th data-field="number" data-sortable="true">Number</th>
+                        <th data-field="name" data-sortable="true">Name</th>
+                        <th data-field="path" data-sortable="true">Path</th>
+                        <th data-field="is_beginning" data-sortable="true">Start Lane</th>
+                        <th data-field="is_completed" data-sortable="true">End Lane</th>
+                        <th data-field="is_worked" data-sortable="true">Work Lane</th>
+                        <th data-field="queue_max" data-sortable="true">Queue Max</th>
+                        <th data-field="created" data-sortable="true">Created</th>
+                        <th data-field="updated" data-sortable="true">Updated</th>
+                    </tr>
+                </thead>
+                {% for lane in lanes %}
+                    <tr>
+                        <td><a href="{% url 'board-detail' number=lane.board %}">{{lane.board}}</a></td>
+                        <td><a href="{% url 'lane-update' number=lane.number %}">{{lane.number}}</a></td>
+                        <td>{{lane.name}}</td>
+                        <td>{{lane.path}}</td>
+                        <td>{{lane.is_beginning}}</td>
+                        <td>{{lane.is_completed}}</td>
+                        <td>{{lane.is_worked}}</td>
+                        <td>{{lane.queue_max}}</td>
+                        <td>{{lane.created}}</td>
+                        <td>{{lane.updated}}</td>
+                        
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

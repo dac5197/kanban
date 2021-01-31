@@ -5,18 +5,3 @@
     background-color: var(--bs-light);
     border-radius: .3rem;  
 }
-
-
-.icon-bar {
-    width: 35px;
-    height: 5px;
-    background-color: black;
-    margin: 6px 0;
-  }
-
-  a .icon-bar:hover {
-    width: 35px;
-    height: 5px;
-    background-color: white;
-    margin: 6px 0;
-  }
