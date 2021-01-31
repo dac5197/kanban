@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from api.serializers import *
@@ -64,7 +64,7 @@ class LaneListView(ListView):
     def get_queryset(self):
         queryset = Lane.objects.filter(owner=self.request.user).order_by('board', 'path')
         return queryset
-        
+
 
 class LaneCreateView(CreateView):
     model = Lane
@@ -112,6 +112,15 @@ class LaneUpdateView(UpdateView):
         return f'/{self.object.board.number}'
 
 
+class LaneDeleteView(DeleteView):
+    model = Lane
+    template_name = 'lane-delete.html'
+
+    def get_object(self, **kwargs):
+        return get_object_or_404(Lane, number=self.kwargs['number'])
+
+    def get_success_url(self):
+        return f'/{self.object.board.number}'
 
 def card_change_lane_view(request, board_id, action, card_id):
     if request.method == 'POST':

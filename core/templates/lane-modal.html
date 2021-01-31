@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <div class="d-grid gap-1 col mx-5">
                     <a class="btn btn-primary btn-lg my-2" href="{% url 'lane-update' number=lane.number %}">Update</a>
-                    <a class="btn btn-danger btn-lg my-2" href="#">Delete</a>
+                    <a class="btn btn-danger btn-lg my-2" href="{% url 'lane-delete' number=lane.number %}">Delete</a>
                 </div>
             </div>
 

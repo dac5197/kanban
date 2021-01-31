@@ -3,7 +3,11 @@
 {% load widget_tweaks %}
 
 {% block title %}
+{% if object %}
+DACME KANBAN - {{lane.number}}
+{% else %}
 DACME KANBAN - Create Lane
+{% endif %}
 {% endblock %}
 
 {% block content %}
