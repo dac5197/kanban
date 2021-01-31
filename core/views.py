@@ -102,6 +102,7 @@ class LaneUpdateView(UpdateView):
         return f'/{self.object.board.number}'
 
 
+
 def card_change_lane_view(request, board_id, action, card_id):
     if request.method == 'POST':
         card = Card.objects.get(id=card_id)

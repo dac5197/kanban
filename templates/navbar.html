@@ -13,16 +13,25 @@
         <div class="navbar-collapse collapse" id="navbar1">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Boards
+                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdownBoards" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Boards
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="{% url 'index' %}">My Boards</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{% url 'board-create' %}">Create Board</a></li>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownBoards">
+                        <li><a class="dropdown-item" href="{% url 'index' %}">My Boards</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'board-create' %}">Create Board</a></li>
                     </ul>
                 </li>
-
+                <li class="nav-item dropdown">
+                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdownLanes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Lanes
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownLanes">
+                        <li><a class="dropdown-item" href="#">My Lanes</a></li>
+                        <li><hr class="dropdown-divider" id="createLaneDivider" hidden></li>
+                        <li><a class="dropdown-item" href="#" id="createLaneAnchor" hidden>Create Lane</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <div class="media">

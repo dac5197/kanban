@@ -10,7 +10,12 @@ DACME KANBAN - Create Lane
 <div class="container-fluid px-0 mx-0">
     <div class="card bg-light border-bottom-0">
         <div class="card-header mb-0">
-            <h4 class="text-center">Create a new Board</h4>
+            {% if object %}
+                <h4 class="text-center">Update Lane</h4>
+                <h6 class="text-center">{{object.number}}</h6>
+            {% else %}
+                <h4 class="text-center">Create Lane</h4>
+            {% endif %}
         </div>
         <div class="card-body p-0">
             <div class="row justify-content-center m-3">

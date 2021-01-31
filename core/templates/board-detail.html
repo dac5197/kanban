@@ -125,9 +125,16 @@ DACME KANBAN - {{board.number}}
     {{ cards_serialized|json_script:"cards_serialized" }}
 
     <script>
+        //Show Create Lane link in navbar
+        document.getElementById("createLaneDivider").hidden=false;
+        document.getElementById("createLaneAnchor").hidden=false;
+        //Set Create Lane link href
+        document.getElementById("createLaneAnchor").href="{% url 'lane-create' number=board.number %}"
+        //Get serialized JSONs
         var vLanes = JSON.parse(document.getElementById('lanes_serialized').textContent);  
         var vCards = JSON.parse(document.getElementById('cards_serialized').textContent);  
 
+        //Call card_change_lane_view
         function cardChangeLane(url) {
             fetch(url, {
                 method:'POST',
