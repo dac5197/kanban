@@ -15,14 +15,6 @@ DACME KANBAN - {{board.number}}
             <div class="card-body p-0">
                 <div id="app">
                     <div class="card-group g-0 justify-content-center">
-                        <!--
-                        <lane-comp
-                            v-for="lane in lanes"
-                            v-bind:lane="lane"
-                            v-bind:cards="cards"
-                            v-bind:key="lane.number"
-                        ></lane-comp>
-                        -->
                         {% if lanes %}
                             {% for lane in lanes %}
                                 <div class="col">
@@ -51,7 +43,6 @@ DACME KANBAN - {{board.number}}
                                             </div>
                                         </div>
                                         <div class="card-body">
-                                            
                                             <card-comp
                                                 v-for="card in cardsForThisLane({{lane.id}})"
                                                 v-bind:card="card"
@@ -60,40 +51,10 @@ DACME KANBAN - {{board.number}}
                                                 @mouseover.native="selectCardNumber(card.number)"
                                                 @mouseleave.native="showFooter = null"
                                             ></card-comp>
-                                            
-                                            <!--
-                                            {% for card in cards %}
-                                                {% if card.lane == lane %}
-                                                    <div class="card mt-3 mb-4 mx-3 bg-info">
-                                                        <div class="card-header">
-                                                            <h6 class="text-center">{{card.number}}</h6>
-                                                            <h4 class="text-center">{{card.name}}</h4>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            {{card.description}}
-                                                        </div>
-                                                        <div class="card-footer d-flex justify-content-center">
-                                                            <a href="#" class="btn btn-secondary btn-sm pb-2 mx-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
-                                                                    <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
-                                                                </svg>
-                                                            </a>
-                                                            <a href="#" class="btn btn-primary btn-sm pb-2 mx-2">Details</a>
-                                                            <a href="#" class="btn btn-secondary btn-sm pb-2 mx-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
-                                                                    <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-                                                                </svg>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                            -->
                                         </div>
                                     </div>
                                 </div>
                                 {% include 'lane-modal.html' with lane=lane %}
-                                
                             {% endfor %}
                         {% else %}
                             
@@ -129,43 +90,35 @@ DACME KANBAN - {{board.number}}
         </div>
     </div>
 
-    {{ lanes_serialized|json_script:"lanes_serialized" }}
     {{ cards_serialized|json_script:"cards_serialized" }}
 
     <script>
-        
-
 
         //Show Create Lane link in navbar
         document.getElementById("createLaneDivider").hidden=false;
         document.getElementById("createLaneAnchor").hidden=false;
         //Set Create Lane link href
         document.getElementById("createLaneAnchor").href="{% url 'lane-create' number=board.number %}"
-        //Get serialized JSONs
-        var vLanes = JSON.parse(document.getElementById('lanes_serialized').textContent);  
-        var vCards = JSON.parse(document.getElementById('cards_serialized').textContent);  
 
-        //Call card_change_lane_view
-        function cardChangeLane(url) {
-            fetch(url, {
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
-                    'X-CSRFToken': csrftoken,
-                },
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                app.cards = data
-                app.showFooter = null
-            })
-        }
-
+        //Render cards component
         const cardComp = Vue.component('card-comp', {
             delimiters: ["[[", "]]"],
             props: ['card', 'showfooter'],
             methods: {
-                cardChangeLane: cardChangeLane
+                cardChangeLane: function(url) {
+                    fetch(url, {
+                        method:'POST',
+                        headers:{
+                            'Content-Type':'application/json',
+                            'X-CSRFToken': csrftoken,
+                        },
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        app.cards = data
+                        app.showFooter = null
+                    })
+                }
             },
             template: `
                 <div class="card mt-3 mb-4 mx-3 bg-info">
@@ -197,58 +150,15 @@ DACME KANBAN - {{board.number}}
             `
         })
 
-        const cardCreate = Vue.component('card-create', {
-            delimiters: ["[[", "]]"],
-            props: ['cardFormData'],
-            
-    
-        })
-
-        const laneComp = Vue.component('lane-comp', {
-            delimiters: ["[[", "]]"],
-            props: ['lane', 'cards'],
-            components: {
-                cardComp
-            },
-            methods: {
-                cardsForThisLane: function(laneID) {
-                    return this.cards.filter(function (card) {
-                        return card.lane === laneID
-                    })
-                }
-            },
-            template: `
-                
-                <div class="col">
-                    <div class="card bg-light h-full-screen">
-                        <div class="card-header">
-                            <h6 class="text-center">[[lane.number]]</h6>
-                            <h3 class="text-center">[[lane.name]]</h3>
-                        </div>
-                        <div class="card-body">
-                            <card-comp
-                                v-for="card in cardsForThisLane(lane.id)"
-                                v-bind:card="card"
-                                v-bind:key="card.number"
-                            ></card-comp>
-                        </div>
-                    </div>
-                </div>
-            
-            `
-        })
-
+        //Vue JS - app
         var app = new Vue({
             delimiters: ["[[", "]]"],
             el: '#app',
             components: {
                 cardComp,
-                cardCreate,
-                laneComp
             },
             data: {
-                lanes : vLanes,
-                cards : vCards,
+                cards : JSON.parse(document.getElementById('cards_serialized').textContent),
                 showFooter: '',
                 cardFormData: {
                     name: document.getElementById("card-name").value,
@@ -259,15 +169,18 @@ DACME KANBAN - {{board.number}}
                 }
             },
             methods: {
-                cardChangeLane: cardChangeLane,
+                //Toggle showFooter when equal to card number
                 selectCardNumber: function(number) {
                     this.showFooter = number
                 },
+                //Get cards for a lane
+                //Filter card JSON by lane id
                 cardsForThisLane: function(laneID) {
                     return this.cards.filter(function (card) {
                         return card.lane === laneID
                     })
                 },
+                //Create new card using Django REST API
                 submitted: function() {
                     console.log('submitted')
                     console.log(JSON.stringify(this.cardFormData))
