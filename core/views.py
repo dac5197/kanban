@@ -49,6 +49,8 @@ class BoardDetailView(DetailView):
         context['cards'] = cards
         context['cards_serialized'] = CardSerializer(cards, many=True).data
 
+        context['priorities'] = Priority.objects.all().order_by('value')
+
         return context
 
     def get_object(self, **kwargs):

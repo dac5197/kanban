@@ -17,9 +17,12 @@ def pre_save_set_updated_timestamp(sender, instance, **kwargs):
 #Set lane timestamp when card changes lane
 @receiver(pre_save, sender=Card)
 def pre_save_set_lane_change_timestamp(sender, instance, **kwargs):
-    init_obj = Card.objects.get(id=instance.id)
-    if instance.lane != init_obj.lane:
+    if instance._state.adding:
         instance.lane_timestamp = timezone.now()
+    else:
+        init_obj = Card.objects.get(id=instance.id)
+        if instance.lane != init_obj.lane:
+            instance.lane_timestamp = timezone.now()
 
 
 #For first lane for lanes belonging to board, set is_beginning to true and set to false for all other lanes

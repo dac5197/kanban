@@ -56,7 +56,7 @@ class LaneSerializer(serializers.ModelSerializer):
 
 
 class CardSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+    #owner = serializers.ReadOnlyField(source='owner.username')
     number = serializers.ReadOnlyField()
     created = serializers.ReadOnlyField()
     updated = serializers.ReadOnlyField()

@@ -33,14 +33,21 @@ DACME KANBAN - {{board.number}}
                                     {% endif %}
                                         <div class="card-header">
                                             <div class="d-flex justify-content-around align-items-center">
-                                                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#laneModal{{lane.number}}">
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#laneModal{{lane.number}}" title="Lane Options">
                                                     <i class="fas fa-bars"></i>
                                                 </button>
                                                 <div class="align-self-stretch">
                                                     <h6 class="text-center">{{lane.number}}</h6>
                                                     <h3 class="text-center">{{lane.name}}</h3>
                                                 </div>
-                                                <div></div>
+                                                <div>
+                                                    {% if lane.is_beginning %}
+                                                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#cardCreateModal" title="Add Card">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                        {% include 'card-create-modal-vue.html' with lane=lane %}
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -86,6 +93,7 @@ DACME KANBAN - {{board.number}}
                                     </div>
                                 </div>
                                 {% include 'lane-modal.html' with lane=lane %}
+                                
                             {% endfor %}
                         {% else %}
                             
@@ -125,6 +133,9 @@ DACME KANBAN - {{board.number}}
     {{ cards_serialized|json_script:"cards_serialized" }}
 
     <script>
+        
+
+
         //Show Create Lane link in navbar
         document.getElementById("createLaneDivider").hidden=false;
         document.getElementById("createLaneAnchor").hidden=false;
@@ -186,6 +197,13 @@ DACME KANBAN - {{board.number}}
             `
         })
 
+        const cardCreate = Vue.component('card-create', {
+            delimiters: ["[[", "]]"],
+            props: ['cardFormData'],
+            
+    
+        })
+
         const laneComp = Vue.component('lane-comp', {
             delimiters: ["[[", "]]"],
             props: ['lane', 'cards'],
@@ -225,12 +243,20 @@ DACME KANBAN - {{board.number}}
             el: '#app',
             components: {
                 cardComp,
+                cardCreate,
                 laneComp
             },
             data: {
                 lanes : vLanes,
                 cards : vCards,
                 showFooter: '',
+                cardFormData: {
+                    name: document.getElementById("card-name").value,
+                    lane: document.getElementById("card-lane").value,
+                    description: document.getElementById("card-desc").value,
+                    priority: document.getElementById("card-priority").value,
+                    owner: document.getElementById("card-owner").value,
+                }
             },
             methods: {
                 cardChangeLane: cardChangeLane,
@@ -242,7 +268,27 @@ DACME KANBAN - {{board.number}}
                         return card.lane === laneID
                     })
                 },
-                
+                submitted: function() {
+                    console.log('submitted')
+                    console.log(JSON.stringify(this.cardFormData))
+                    fetch('http://127.0.0.1:8000/api/cards/', {
+                        method:'POST',
+                        headers:{
+                            'Content-Type':'application/json',
+                            'X-CSRFToken': csrftoken,
+                        },
+                        body: JSON.stringify(this.cardFormData)
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        //Render new data to DOM
+                        this.cards = data
+                        this.showFooter = null
+                        //Clear cardFormData
+                        this.cardFormData.name = ''
+                        this.cardFormData.description = ''
+                    })
+                }
             }
         })
 
