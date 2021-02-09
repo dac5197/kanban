@@ -56,7 +56,7 @@
   
     <!-- Show navbar -->
     {% include 'navbar.html' %}
-    <div>
+    <div class="mt-content">
         <!-- Conent-->
         {% block content %}
         {% endblock content %}
@@ -67,5 +67,8 @@
 <style>
     html, body {
         height: 100vh;
+    }
+    .mt-content {
+        margin-top: 3.65rem !important;
     }
 </style>

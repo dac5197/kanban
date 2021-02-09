@@ -54,10 +54,11 @@ class LaneDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class CardList(generics.ListCreateAPIView):
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
+    #Override create to return json response of all Card objects for a board
     def create(self, request, *args, **kwargs):
         serializer = CardSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
