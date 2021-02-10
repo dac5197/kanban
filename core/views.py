@@ -124,6 +124,17 @@ class LaneDeleteView(DeleteView):
     def get_success_url(self):
         return f'/{self.object.board.number}'
 
+
+class CardListView(ListView):
+    models = Card
+    template_name = 'card-list.html'
+    context_object_name = 'cards'
+
+    def get_queryset(self):
+        queryset = Card.objects.filter(owner=self.request.user).order_by('lane__board', 'lane', 'number')
+        return queryset
+
+
 def card_change_lane_view(request, board_id, action, card_id):
     if request.method == 'POST':
         card = Card.objects.get(id=card_id)

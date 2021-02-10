@@ -10,6 +10,7 @@ urlpatterns = [
     path('lane-create/<str:number>', views.LaneCreateView.as_view(), name='lane-create'),
     path('lane-update/<str:number>', views.LaneUpdateView.as_view(), name='lane-update'),
     path('lane-delete/<str:number>', views.LaneDeleteView.as_view(), name='lane-delete'),
+    path('card-list', views.CardListView.as_view(), name='card-list'),
     #path('<str:number>/', views.board_detail_view, name='board-detail'),
     path('card-change-lane/<int:board_id>/<str:action>/<int:card_id>', views.card_change_lane_view, name='card-change-lane'),
     path('create_defualt_lanes/<str:number>', views.create_defualt_lanes, name='create-defualt-lanes'),

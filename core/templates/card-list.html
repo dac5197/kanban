@@ -1,0 +1,60 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+DACME KANBAN - My Cards
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0 mx-0">
+    <div class="card bg-light border-bottom-0">
+        <div class="card-header mb-0">
+            <h4 class="text-center">My Cards</h4>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm small"
+                data-toggle="table"
+                data-sort-class="table-active"
+                data-sortable="true"
+                data-pagination="true"
+                data-pagination-h-align="left"
+                data-pagination-detail-h-align="right"
+                data-page-size="25"
+                data-page-list="[25, 50, 100, All]"
+            >
+                <thead class="bg-light">
+                    <tr>
+                        <th data-field="board" data-sortable="true">Board</th>
+                        <th data-field="lane" data-sortable="true">Lane</th>
+                        <th data-field="number" data-sortable="true">Number</th>
+                        <th data-field="name" data-sortable="true">Name</th>
+                        <th data-field="priority" data-sortable="true">Priority</th>
+                        <th data-field="status" data-sortable="true">Status</th>
+                        <th data-field="created" data-sortable="true">Created</th>
+                        <th data-field="updated" data-sortable="true">Updated</th>
+                        <th data-field="lane_timestamp" data-sortable="true">Lane Timestamp</th>
+                        <th data-field="active" data-sortable="true">Active</th>
+                    </tr>
+                </thead>
+                {% for card in cards %}
+                    <tr>
+                        <td><a href="{% url 'board-detail' number=card.board %}">{{card.board}}</a></td>
+                        <td><a href="{% url 'lane-update' number=card.lane.number %}">{{card.lane}}</a></td>
+                        <td><a href="#">{{card.number}}</a></td>
+                        <td>{{card.name}}</td>
+                        <td>{{card.priority}}</td>
+                        <td>{{card.lane.name}}</td>
+                        <td>{{card.created}}</td>
+                        <td>{{card.updated}}</td>
+                        <td>{{card.lane_timestamp}}</td>
+                        <td>{{card.active}}</td>
+
+                        
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

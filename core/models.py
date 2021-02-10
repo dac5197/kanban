@@ -137,3 +137,7 @@ class Card(models.Model):
     @property
     def lane_is_worked(self):
         return self.lane.is_worked
+
+    @property
+    def board(self):
+        return self.lane.board

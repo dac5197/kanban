@@ -32,6 +32,16 @@
                         <li><a class="dropdown-item" href="#" id="createLaneAnchor" hidden>Create Lane</a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdownLanes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Cards
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownLanes">
+                        <li><a class="dropdown-item" href="{% url 'card-list' %}">My Cards</a></li>
+                        <li><hr class="dropdown-divider" id="createLaneDivider" hidden></li>
+                        <li><a class="dropdown-item" href="#" id="createLaneAnchor" hidden>Create Card</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <div class="media">
