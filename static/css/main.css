@@ -5,3 +5,13 @@
     background-color: var(--bs-light);
     border-radius: .3rem;  
 }
+
+/* Minus icon for list view delete */
+.icon-delete {
+    color: red;
+}
+
+.icon-delete:hover .fa-minus:before {
+    color: red;
+    content: "\f146";
+}

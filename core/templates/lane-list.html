@@ -35,6 +35,7 @@ DACME KANBAN - My Lanes
                         <th data-field="queue_max" data-sortable="true">Queue Max</th>
                         <th data-field="created" data-sortable="true">Created</th>
                         <th data-field="updated" data-sortable="true">Updated</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 {% for lane in lanes %}
@@ -49,7 +50,9 @@ DACME KANBAN - My Lanes
                         <td>{{lane.queue_max}}</td>
                         <td>{{lane.created}}</td>
                         <td>{{lane.updated}}</td>
-                        
+                        <td class="text-center">
+                            <a class="icon-delete" href="{% url 'lane-delete' number=lane.number %}"><i class="fas fa-minus"></i></i></i></a>
+                        </td>
                     </tr>
                 {% endfor %}
             </table>

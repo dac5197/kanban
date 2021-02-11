@@ -51,25 +51,12 @@ DACME KANBAN - My Cards
                         <td>{{card.lane_timestamp}}</td>
                         <td>{{card.active}}</td>
                         <td class="text-center">
-                            <a class="card-delete" href="{% url 'card-delete' number=card.number %}"><i class="fas fa-minus"></i></i></i></a>
+                            <a class="icon-delete" href="{% url 'card-delete' number=card.number %}"><i class="fas fa-minus"></i></i></i></a>
                         </td>
-                        
                     </tr>
                 {% endfor %}
             </table>
         </div>
     </div>
 </div>
-
-<style>
-    .card-delete {
-        color: red;
-    }
-
-    .card-delete:hover .fa-minus:before {
-        color: red;
-        content: "\f146";
-    }
-</style>
-
 {% endblock %}
