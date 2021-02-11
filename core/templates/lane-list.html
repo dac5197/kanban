@@ -29,6 +29,7 @@ DACME KANBAN - My Lanes
                         <th data-field="number" data-sortable="true">Number</th>
                         <th data-field="name" data-sortable="true">Name</th>
                         <th data-field="path" data-sortable="true">Path</th>
+                        <th data-field="card_count" data-sortable="true">Card Count</th>
                         <th data-field="is_beginning" data-sortable="true">Start Lane</th>
                         <th data-field="is_completed" data-sortable="true">End Lane</th>
                         <th data-field="is_worked" data-sortable="true">Work Lane</th>
@@ -44,9 +45,10 @@ DACME KANBAN - My Lanes
                         <td><a href="{% url 'lane-update' number=lane.number %}">{{lane.number}}</a></td>
                         <td>{{lane.name}}</td>
                         <td>{{lane.path}}</td>
-                        <td>{{lane.is_beginning}}</td>
-                        <td>{{lane.is_completed}}</td>
-                        <td>{{lane.is_worked}}</td>
+                        <td>{{lane.card_count}}</td>
+                        {% include 'list-bool-field.html' with field=lane.is_beginning %}
+                        {% include 'list-bool-field.html' with field=lane.is_completed %}
+                        {% include 'list-bool-field.html' with field=lane.is_worked %}
                         <td>{{lane.queue_max}}</td>
                         <td>{{lane.created}}</td>
                         <td>{{lane.updated}}</td>

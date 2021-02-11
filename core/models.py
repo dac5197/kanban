@@ -107,6 +107,10 @@ class Lane(models.Model):
         parent = Lane.objects.get(path=self.path[:-1], board__id=self.board.id)
         return parent.name
 
+    @property
+    def card_count(self):
+        return Card.objects.filter(lane=self).count()
+
 
 class Card(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)

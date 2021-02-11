@@ -15,3 +15,11 @@
     color: red;
     content: "\f146";
 }
+
+.color-true {
+    color: darkgreen !important;
+}
+
+.color-false {
+    color: darkred;
+}
