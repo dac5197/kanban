@@ -81,6 +81,19 @@ DACME KANBAN - {{card.number}}
         </div>
     </div>
 </div>
-
-
+<script>
+    //Resize textarea on input
+    textarea = document.querySelector("#id_description");
+    textarea.addEventListener('input', autoResize, false);
+    function autoResize() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    }
+    //Resize textarea on page load
+    window.onload = initResize;
+    function initResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }   
+</script>
 {% endblock %}
