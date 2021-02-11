@@ -30,3 +30,9 @@ def insert_path(qs, action):
         elif action == 'decrement' or action == 'minus' or action == 'subtract' or action == 'left':
             obj.path = chr(ord(obj.path)-1)
         obj.save()
+
+
+def get_card_form_lane_choices(card):
+    lanes = Lane.objects.filter(board=card.lane.board).order_by('path')
+    choices = [(lane.id, lane.number) for lane in lanes]
+    return choices

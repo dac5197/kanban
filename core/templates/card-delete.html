@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+DACME KANBAN - Delete Lane {{card.number}}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0 mx-0">
+    <div class="card bg-light border-bottom-0">
+        <div class="card-body p-0 mt-3">
+            <div class="row justify-content-center m-3">
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% include 'form-errors.html' with form=form %}
+                            <h4>Confirm Delete</h4>
+                            <div class=" mt-3">
+                                <a class="btn btn-secondary btn-lg m-3 w-40" href="{% url 'card-list' %}">Cancel</a>
+                                <button class="btn btn-danger btn-lg m-3 w-40" name="submit" value="submit" type="submit">Confirm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

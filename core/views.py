@@ -6,6 +6,7 @@ from django.views.generic.list import ListView
 
 from api.serializers import *
 
+from .forms import *
 from .models import *
 from .utils import *
 
@@ -133,6 +134,25 @@ class CardListView(ListView):
     def get_queryset(self):
         queryset = Card.objects.filter(owner=self.request.user).order_by('lane__board', 'lane', 'number')
         return queryset
+
+
+class CardUpdateView(UpdateView):
+    model = Card
+    template_name = 'card-form.html'
+    form_class = CardForm
+    success_url = '/card-list'
+
+    def get_object(self, **kwargs):
+        return get_object_or_404(Card, number=self.kwargs['number'])
+
+
+class CardDeleteView(DeleteView):
+    model = Card
+    template_name = 'card-delete.html'
+    success_url = '/card-list'
+
+    def get_object(self, **kwargs):
+        return get_object_or_404(Card, number=self.kwargs['number'])
 
 
 def card_change_lane_view(request, board_id, action, card_id):

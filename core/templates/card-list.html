@@ -35,13 +35,14 @@ DACME KANBAN - My Cards
                         <th data-field="updated" data-sortable="true">Updated</th>
                         <th data-field="lane_timestamp" data-sortable="true">Lane Timestamp</th>
                         <th data-field="active" data-sortable="true">Active</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 {% for card in cards %}
                     <tr>
                         <td><a href="{% url 'board-detail' number=card.board %}">{{card.board}}</a></td>
                         <td><a href="{% url 'lane-update' number=card.lane.number %}">{{card.lane}}</a></td>
-                        <td><a href="#">{{card.number}}</a></td>
+                        <td><a href="{% url 'card-update' number=card.number %}">{{card.number}}</a></td>
                         <td>{{card.name}}</td>
                         <td>{{card.priority}}</td>
                         <td>{{card.lane.name}}</td>
@@ -49,7 +50,9 @@ DACME KANBAN - My Cards
                         <td>{{card.updated}}</td>
                         <td>{{card.lane_timestamp}}</td>
                         <td>{{card.active}}</td>
-
+                        <td class="text-center">
+                            <a class="card-delete" href="{% url 'card-delete' number=card.number %}"><i class="fas fa-minus"></i></i></i></a>
+                        </td>
                         
                     </tr>
                 {% endfor %}
@@ -57,4 +60,16 @@ DACME KANBAN - My Cards
         </div>
     </div>
 </div>
+
+<style>
+    .card-delete {
+        color: red;
+    }
+
+    .card-delete:hover .fa-minus:before {
+        color: red;
+        content: "\f146";
+    }
+</style>
+
 {% endblock %}

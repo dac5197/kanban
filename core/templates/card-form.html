@@ -1,0 +1,86 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+
+DACME KANBAN - {{card.number}}
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0 mx-0">
+    <div class="card bg-light border-bottom-0">
+        <div class="card-header mb-0">
+            <h4 class="text-center">Update Card</h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="row justify-content-center m-3">
+                <div class="col-md-8">
+                    <div class="card p-3">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% include 'form-errors.html' with form=form %}
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="{{form.number.id_for_label}}"><strong>{{form.number.label}}:</strong></label>
+                                    {{form.number|add_class:'form-control'}}
+                                </div>
+                                <div class="col">
+                                    <label for="{{form.lane.id_for_label}}"><strong>{{form.lane.label}}:</strong></label>
+                                    {{form.lane|add_class:'form-control'}}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="{{form.name.id_for_label}}"><strong>{{form.name.label}}:</strong></label>
+                                    {{form.name|add_class:'form-control'}}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="{{form.description.id_for_label}}"><strong>{{form.description.label}}:</strong></label>
+                                    {{form.description|add_class:'form-control'|attr:'rows:3'}}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="{{form.priority.id_for_label}}"><strong>{{form.priority.label}}:</strong></label>
+                                    {{form.priority|add_class:'form-control'}}
+                                </div>
+                                <div class="col">
+                                    <label for="{{form.owner.id_for_label}}"><strong>{{form.owner.label}}:</strong></label>
+                                    {{form.owner|add_class:'form-control'}}
+                                </div>
+                                <div class="col">
+                                    <label for="{{form.active.id_for_label}}"><strong>{{form.active.label}}:</strong></label><br>
+                                    {{form.active|add_class:'form-check-input form-control-sm'}}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="{{form.created.id_for_label}}"><strong>{{form.created.label}}:</strong></label>
+                                    {{form.created|add_class:'form-control'}}
+                                </div>
+                                <div class="col">
+                                    <label for="{{form.updated.id_for_label}}"><strong>{{form.updated.label}}:</strong></label>
+                                    {{form.updated|add_class:'form-control'}}
+                                </div>
+                                <div class="col">
+                                    <label for="{{form.lane_timestamp.id_for_label}}"><strong>{{form.lane_timestamp.label}}:</strong></label>
+                                    {{form.lane_timestamp|add_class:'form-control'}}
+                                </div>
+                            </div>
+                            <div class="d-grid mt-3 px-5">
+                                <button class="btn btn-success btn-lg m-3" name="submit" value="submit" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
