@@ -37,7 +37,7 @@ DACME KANBAN - {{board.number}}
                                                         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#cardCreateModal" title="Add Card">
                                                             <i class="fas fa-plus"></i>
                                                         </button>
-                                                        {% include 'card-create-modal-vue.html' with lane=lane %}
+                                                        {% include 'card-modal-create-vue.html' with lane=lane %}
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -53,6 +53,7 @@ DACME KANBAN - {{board.number}}
                                             ></card-comp>
                                         </div>
                                     </div>
+                                    
                                 </div>
                                 {% include 'lane-modal.html' with lane=lane %}
                             {% endfor %}
@@ -85,11 +86,13 @@ DACME KANBAN - {{board.number}}
                         
                         {% endif %}
                     </div>
-                </div>
+                    {% include 'card-modal-detail-vue.html' with lane=lane %}
+                </div>                
             </div>
         </div>
     </div>
-
+    
+    
     {{ cards_serialized|json_script:"cards_serialized" }}
 
     <script>
@@ -104,6 +107,11 @@ DACME KANBAN - {{board.number}}
         const cardComp = Vue.component('card-comp', {
             delimiters: ["[[", "]]"],
             props: ['card', 'showfooter'],
+            data: function() {
+                return {
+                    
+                }
+            },
             methods: {
                 cardChangeLane: function(url) {
                     fetch(url, {
@@ -118,6 +126,19 @@ DACME KANBAN - {{board.number}}
                         app.cards = data
                         app.showFooter = null
                     })
+                },
+                getCardDetails: function(card) {
+                    app.cardFormDataDetails.active = card.active
+                    app.cardFormDataDetails.created = card.created
+                    app.cardFormDataDetails.description = card.description
+                    app.cardFormDataDetails.id = card.id
+                    app.cardFormDataDetails.lane = card.lane
+                    app.cardFormDataDetails.lane_timestamp = card.lane_timestamp
+                    app.cardFormDataDetails.name = card.name
+                    app.cardFormDataDetails.number = card.number
+                    app.cardFormDataDetails.owner = card.owner
+                    app.cardFormDataDetails.priority = card.priority
+                    app.cardFormDataDetails.updated = card.updated
                 }
             },
             template: `
@@ -138,7 +159,9 @@ DACME KANBAN - {{board.number}}
                                     <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                                 </svg>
                             </a>
-                            <a href="#" class="btn btn-primary btn-sm pb-2 mx-2">Details</a>
+                            <button type="button" class="btn btn-primary btn-sm pb-2 mx-2" data-bs-toggle="modal" data-bs-target="#cardDetailModal" title="Card Details" v-on:click="getCardDetails(card)">
+                                Details
+                            </button>
                             <a href="javascript:void(0)" class="btn btn-secondary btn-sm pb-2 mx-2" v-on:click="cardChangeLane('/card-change-lane/{{board.id}}/next/'+[[card.id]])" v-if="card.lane_location !== 'end'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
                                     <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
@@ -166,7 +189,20 @@ DACME KANBAN - {{board.number}}
                     description: document.getElementById("card-desc").value,
                     priority: document.getElementById("card-priority").value,
                     owner: document.getElementById("card-owner").value,
-                }
+                },
+                cardFormDataDetails: {
+                    active: 'True',
+                    created: '2020-02-10',
+                    description: 'This is a test.',
+                    id: '1',
+                    lane: 'LANE0000001',
+                    lane_timestamp: '2020-02-11',
+                    name: 'default',
+                    number: 'default',
+                    owner: 'dac5197',
+                    priority: '4',
+                    updated: '2020-02-12',
+                },
             },
             methods: {
                 //Toggle showFooter when equal to card number
@@ -181,16 +217,15 @@ DACME KANBAN - {{board.number}}
                     })
                 },
                 //Create new card using Django REST API
-                submitted: function() {
+                submitted: function(url, submit_method, formData) {
                     console.log('submitted')
-                    console.log(JSON.stringify(this.cardFormData))
-                    fetch('http://127.0.0.1:8000/api/cards/', {
-                        method:'POST',
+                    fetch(url, {
+                        method: submit_method,
                         headers:{
                             'Content-Type':'application/json',
                             'X-CSRFToken': csrftoken,
                         },
-                        body: JSON.stringify(this.cardFormData)
+                        body: JSON.stringify(formData)
                     })
                     .then((response) => response.json())
                     .then((data) => {
@@ -201,7 +236,8 @@ DACME KANBAN - {{board.number}}
                         this.cardFormData.name = ''
                         this.cardFormData.description = ''
                     })
-                }
+                    
+                },
             }
         })
 

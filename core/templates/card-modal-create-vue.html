@@ -38,7 +38,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary btn-lg" id="submitCard" data-bs-dismiss="modal" v-on:click.prevent="submitted">Submit</button>
+                <button type="button" class="btn btn-primary btn-lg" id="submitCard" data-bs-dismiss="modal" v-on:click.prevent="submitted('/api/cards/', 'POST', cardFormData)">Submit</button>
               </div>
         </div>
     </div>

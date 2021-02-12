@@ -1,0 +1,79 @@
+<!-- Modal -->
+<div class="modal fade" id="cardDetailModal" tabindex="-1" aria-labelledby="cardDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="cardDetailModalLabel">
+                    <h4 class="mb-2">CARD Details</h4>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="detailCard">
+                    <div class="row mb-3 mx-auto">
+                        <div class="col">
+                            <label for="card-details-number" class="form-label"><strong>Number:</strong></label>
+                            <input type="text" class="form-control" id="card-details-number" v-model="cardFormDataDetails.number" readonly>
+                        </div>
+                        <div class="col">
+                            <label for="card-details-lane" class="form-label"><strong>Lane:</strong></label>
+                            <select class="form-select" aria-label="card-details-lane" id="card-details-lane" v-model="cardFormDataDetails.lane">
+                                {% for lane in lanes %}                        
+                                        <option value="{{lane.id}}">{{lane.number}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3 mx-auto">
+                        <div class="col">
+                            <label for="card-details-name" class="form-label"><strong>Name:</strong></label>
+                            <input type="text" class="form-control" id="card-details-name" v-model="cardFormDataDetails.name">
+                        </div>
+                    </div>
+                    <div class="row mb-3 mx-auto">
+                        <div class="col">
+                            <label for="card-details-desc" class="form-label"><strong>Description:</strong></label>
+                            <textarea type="text" class="form-control" id="card-details-desc" rows="3" v-model="cardFormDataDetails.description"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3 mx-auto">
+                        <div class="col">
+                            <label for="card-details-priority" class="form-label"><strong>Priority:</strong></label>
+                            <select class="form-select" aria-label="card-priority" id="card-details-priority" v-model="cardFormDataDetails.priority">
+                                {% for priority in priorities %}                        
+                                        <option value="{{priority.value}}">{{priority.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="card-details-owner" class="form-label"><strong>Owner:</strong></label>
+                            <input type="text" class="form-control" id="card-details-owner" v-model="cardFormDataDetails.owner" readonly>
+                        </div>
+                        <div class="col">
+                            <label for="card-details-active" class="form-label"><strong>Active:</strong></label><br>
+                            <input class="form-check-input form-control-sm" type="checkbox" value="" id="card-details-active" v-model="cardFormDataDetails.active">
+                        </div>
+                    </div>
+                    <div class="row mb-3 mx-auto">
+                        <div class="col">
+                            <label for="card-details-created" class="form-label"><strong>Created:</strong></label>
+                            <input type="text" class="form-control" id="card-details-created" v-model="cardFormDataDetails.created" readonly>
+                        </div>
+                        <div class="col">
+                            <label for="card-details-updated" class="form-label"><strong>Updated:</strong></label>
+                            <input type="text" class="form-control" id="card-details-updated" v-model="cardFormDataDetails.updated" readonly>
+                        </div>
+                        <div class="col">
+                            <label for="card-details-lane_timestamp" class="form-label"><strong>Lane Timestamp:</strong></label>
+                            <input type="text" class="form-control" id="card-details-lane-timestamp" v-model="cardFormDataDetails.lane_timestamp" readonly>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer mx-3">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-lg" id="submitCardDetails" data-bs-dismiss="modal" v-on:click.prevent="submitted('/api/cards/'+cardFormDataDetails.id, 'PUT', cardFormDataDetails)">Submit</button>
+              </div>
+        </div>
+    </div>
+</div>

@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 
 from .serializers import *
+from .utils import *
 
 # Create your views here.
 
@@ -60,11 +61,8 @@ class CardList(generics.ListCreateAPIView):
 
     #Override create to return json response of all Card objects for a board
     def create(self, request, *args, **kwargs):
-        serializer = CardSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        board_id=Lane.objects.get(id=request.data['lane']).board.id
-        cards_serialized = CardSerializer(Card.objects.filter(lane__board__id=board_id).order_by('lane_timestamp'), many=True).data
+        save_card_serialized_request_data(request=request)
+        cards_serialized = get_card_serialized_response(request=request)
         return JsonResponse(cards_serialized, safe=False)
 
 class CardDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -72,4 +70,7 @@ class CardDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
-
+    def update(self, request, *args, **kwargs):
+        save_card_serialized_request_data(request=request, instance=self.get_object())
+        cards_serialized = get_card_serialized_response(request=request)
+        return JsonResponse(cards_serialized, safe=False)
